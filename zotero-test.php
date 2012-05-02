@@ -138,7 +138,7 @@ class Zotero_Test {
         $this->includes();
         $html = '';
         $library = new Zotero_Library($this->libraryType, $this->libraryID, $this->librarySlug);
-        $library->setCacheTtl(0);
+        $library->setCacheTtl(84600);
 
         $subCollections = $library->fetchCollections(array('collectionKey'=>$collection));
         foreach($subCollections as $subCollection){
@@ -146,7 +146,7 @@ class Zotero_Test {
            $subCollectionKey = $subCollection->collectionKey;
            $items = $library->fetchItemsTop(array('limit'=>10, 'collectionKey'=>$subCollectionKey, 'content'=>'json,bib'));
            foreach($items as $item){
-               $html .= $item->bibContent;
+               $html .= preg_replace('/\s(http:[\S]+?)(?=.<)/i', " <a target='new' href='$1'>$1</a>", $item->bibContent);
            }
         }
         return $html;
@@ -172,5 +172,11 @@ function zotero_test_get_zotero_custom_field() {
 
 function zotero_test_print_collection() {
     global $zoteroTest;
-    echo $zoteroTest->print_collection(zotero_test_get_zotero_custom_field());
+    $zoteroCollectionID = zotero_test_get_zotero_custom_field();
+    if ($zoteroCollectionID){
+        echo $zoteroTest->print_collection($zoteroCollectionID);
+    }
+    else{
+        echo '<p>There are no additional resources at this time.</p>';
+    }
 }
