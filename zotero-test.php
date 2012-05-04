@@ -96,7 +96,7 @@ class Zotero_Test {
         add_menu_page('Zotero Test', 'Zotero Test', 'manage_options', 'zotero-test', array($this, 'admin_display'));
     }
     
-    // Add Vitaware admin page. Edit admin-page.php to make changes.
+    // Add Zotero Test admin page. Edit admin-page.php to make changes.
     function admin_display() {      
         include('admin-page.php');     
     }
@@ -144,7 +144,7 @@ class Zotero_Test {
         foreach($subCollections as $subCollection){
            $html .= '<h3 id="'. $subCollection->name . '">' . $subCollection->name . "</h3>";
            $subCollectionKey = $subCollection->collectionKey;
-           $items = $library->fetchItemsTop(array('limit'=>10, 'collectionKey'=>$subCollectionKey, 'content'=>'json,bib'));
+           $items = $library->fetchItemsTop(array('limit'=>100, 'collectionKey'=>$subCollectionKey, 'content'=>'json,bib', 'order'=>'creator'));
            foreach($items as $item){
                $html .= preg_replace('/\s(http:[\S]+?)(?=.<)/i', " <a target='new' href='$1'>$1</a>", $item->bibContent);
            }
