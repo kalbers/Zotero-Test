@@ -140,13 +140,13 @@ class Zotero_Test {
         $library = new Zotero_Library($this->libraryType, $this->libraryID, $this->librarySlug);
         $library->setCacheTtl(84600);
 
-        $subCollections = $library->fetchCollections(array('collectionKey'=>$collection));
+        $subCollections = $library->fetchCollections(array('collectionKey'=>$collection, 'order'=>'title', 'sort'=>'desc'));
         foreach($subCollections as $subCollection){
            $html .= '<h3 id="'. $subCollection->name . '">' . $subCollection->name . "</h3>";
            $subCollectionKey = $subCollection->collectionKey;
-           $items = $library->fetchItemsTop(array('limit'=>100, 'collectionKey'=>$subCollectionKey, 'content'=>'json,bib', 'order'=>'creator'));
+           $items = $library->fetchItemsTop(array('limit'=>100, 'collectionKey'=>$subCollectionKey, 'content'=>'json,coins,bib', 'order'=>'title'));
            foreach($items as $item){
-               $html .= preg_replace('/\s(http:[\S]+?)(?=.<)/i', " <a target='new' href='$1'>$1</a>", $item->bibContent);
+            $html .= Zotero_Lib_Utils::wrapLinks($item->bibContent);
            }
         }
         return $html;
